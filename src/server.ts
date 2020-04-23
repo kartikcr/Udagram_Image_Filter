@@ -36,7 +36,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       const { image_url } = req.query;
       // validate the image_url query
       if (!image_url) {
-        return res.status(400).send("Query parameter 'image_url' is required");
+        return res.status(400).send("Query parameter is required");
       }
 
       // Filter image and send the resulting file in the response
