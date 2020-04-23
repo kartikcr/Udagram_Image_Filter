@@ -31,21 +31,25 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   //! END @TODO1
 
- app.get("/filteredimage",
+app.get( "/", async ( req, res ) => {
+    res.send("try GET /filteredimage?image_url={{}}")
+  } );
+
+
+ app.get("/filteredimage/",
     async( req, res ) => {
-      const { imageurl } = req.query;
+      let {image_url } = req.query;
       // validate the imageurl query
-      if (!imageurl) {
-        return res.status(400).send("Query parameter missing");
+      if (!image_url) {
+        return res.status(400).send("Query parameter(Image URL) missing");
       }
 
       // Filter image and send the resulting file in the response
-      filterImageFromURL(imageurl).then(filteredpath => {
-        res.sendFile(filteredpath, () => {
-          // Delete file after sending
-          let files:Array<string> = [filteredpath];
-          deleteLocalFiles(files);
-        });
+      filterImageFromURL(image_url).then(file => {
+        res.status(200).sendFile(file);
+        res.on('finish', () => deleteLocalFiles([file]));
+      }, error => {
+        return res.status(400).send(error);
       });
     }
   );
